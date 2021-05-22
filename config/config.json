@@ -1,0 +1,9 @@
+{
+    "batiment_planetaire.color":[50, 143, 18],
+    "batiment_lunaire.color":[190, 158, 95],
+    "recherches.color":[26, 132, 159],
+    "vaisseaux_militaires.color":[182, 10, 10],
+    "vaisseaux_civils.color":[182, 10, 10],
+    "defense_planetaire.color":[135, 80, 9],
+    "defense_lunaire.color":[111, 111, 111]
+}

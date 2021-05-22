@@ -1,0 +1,5 @@
+{
+    "git.ignoreLimitWarning": true,
+    "python.languageServer": "Pylance",
+    "python.pythonPath": "C:\\Users\\flori\\AppData\\Local\\Programs\\Python\\Python38\\python.exe"
+}
