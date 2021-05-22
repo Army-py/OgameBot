@@ -67,21 +67,22 @@ class Listener:
     def get_color(self, range):
         file = open("./config/config.json")
         config = json.load(file)
-        self.color = config[f"{range}.color"]
+        self.color = (config[range])["color"]
         file.close()
 
 
     def get_prefix(self, range):
         file = open("./config/config.json")
         config = json.load(file)
-        self.color = config[f"{range}.prefix"]
+        self.prefix = (config[range])["prefix"]
         file.close()
 
 
     def set_embed(self, range):
         self.get_color(range)
+        self.get_prefix(range)
         self.embed = discord.Embed(
-            description = "```\n" + '\n'.join([f"{lst}" for lst in self.format_values(range)]) + "\n```",
+            description = f"```{self.prefix}\n" + '\n'.join([f"{lst}" for lst in self.format_values(range)]) + "\n```",
             colour = discord.Colour.from_rgb(self.color[0], self.color[1], self.color[2])
         )
         return self.embed
@@ -96,7 +97,6 @@ class EVENT_refresh(commands.Cog):
 
     def cog_unload(self):
         self.refresh.cancel()
-
 
     @commands.Cog.listener()
     async def on_ready(self):
