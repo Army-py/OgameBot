@@ -1,0 +1,30 @@
+{
+    "batiment_planetaire": {
+        "message_id": 845772416823066664,
+        "channel_id": 841433998785118218
+    },
+    "batiment_lunaire": {
+        "message_id": 0,
+        "channel_id": 0
+    },
+    "recherches": {
+        "message_id": 0,
+        "channel_id": 0
+    },
+    "vaisseaux_militaires": {
+        "message_id": 0,
+        "channel_id": 0
+    },
+    "vaisseaux_civils": {
+        "message_id": 0,
+        "channel_id": 0
+    },
+    "defense_planetaire": {
+        "message_id": 0,
+        "channel_id": 0
+    },
+    "defense_lunaire": {
+        "message_id": 0,
+        "channel_id": 0
+    }
+}

@@ -11,14 +11,10 @@ from google_auth_oauthlib.flow import Flow, InstalledAppFlow
 from googleapiclient.discovery import build
 
 
-class ranges(Enum):
-    batiment_planetaire = "A6:D21"
-    batiment_lunaire = "A23:D30"
-    recherches = "A32:D47"
-    vaisseaux_militaires = "A49:D58"
-    vaisseaux_civils = "A60:D65"
-    defense_planetaire = "A67:D74"
-    defense_lunaire = "A76:D81"
+
+class prefixes(Enum):
+    md = "#"
+    diff = "-"
 
 
 class Listener:
@@ -59,44 +55,82 @@ class Listener:
 
     def format_values(self, range):
         data = []
-        for i in self.get_values(ranges[range].value):
+        for i in self.get_values((self.config[range])["range"]):
             data.append(' - '.join([f"{lst}" for lst in i]))
         return data
 
 
+    def open_config(self):
+        file = open("./config/config.json")
+        self.config = json.load(file)
+
+
     def get_color(self, range):
-        file = open("./config/config.json")
-        config = json.load(file)
-        self.color = (config[range])["color"]
-        file.close()
+        self.color = (self.config[range])["color"]
 
 
-    def get_prefix(self, range):
-        file = open("./config/config.json")
-        config = json.load(file)
-        self.prefix = (config[range])["prefix"]
-        file.close()
+    def get_language(self, range):
+        self.language = (self.config[range])["prefix"]
 
 
     def set_embed(self, range):
+        self.open_config()
         self.get_color(range)
-        self.get_prefix(range)
+        self.get_language(range)
+
+        if self.language in prefixes.__members__: prefix = prefixes[self.language].value
+        else: prefix = ""
+
         self.embed = discord.Embed(
-            description = f"```{self.prefix}\n" + '\n'.join([f"{lst}" for lst in self.format_values(range)]) + "\n```",
+            description = f"```{self.language}\n" + '\n'.join([f"{prefix} {lst}" for lst in self.format_values(range)]) + "\n```",
             colour = discord.Colour.from_rgb(self.color[0], self.color[1], self.color[2])
         )
+        # self.embed.set_image(url=f"attachment://{range}.png")
         return self.embed
+
+
+    def update_message_id(self, msg, range):
+        with open("./files/json/messages.json", "r") as file:
+            messages_id = json.load(file)
+            (messages_id[range])["message_id"] = msg.id
+            (messages_id[range])["channel_id"] = msg.channel.id
+        
+        with open("./files/json/messages.json", "w") as file:
+            json.dump(messages_id, file, indent=4)
+
+
+    async def send(self, ctx, type):
+        image = discord.File(f"./files/images/{type}.png", filename=f"{type}.png")
+        msg = await ctx.send(file=image, embed=self.set_embed(type))
+        self.update_message_id(msg, type)
+
+
+    async def refresh(self):
+        with open("./files/json/messages.json", "r") as file:
+            messages_id = json.load(file)
+            for i in messages_id:
+                try:
+                    channel = self.client.get_channel((messages_id.get(i))["channel_id"])
+                    msg = await channel.fetch_message((messages_id.get(i))["message_id"])
+                    await msg.edit(embed=self.set_embed(i))
+                except Exception:
+                    pass
 
 
 
 class EVENT_refresh(commands.Cog):
     def __init__(self, client):
         self.client = client
+
         self.event = Listener(self.client)
-        # self.refresh.start()
+        # self.event.connect()
+
+        self.refresh.start()
+
 
     def cog_unload(self):
         self.refresh.cancel()
+
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -106,7 +140,7 @@ class EVENT_refresh(commands.Cog):
     @tasks.loop(minutes=1.0)
     async def refresh(self):
         self.event.connect()
-        print(self.event.get_values(ranges["batiment_planetaire"].value))
+        await self.event.refresh()
 
 
     options = [
@@ -149,11 +183,8 @@ class EVENT_refresh(commands.Cog):
     # @commands.command()
     @cog_ext.cog_slash(name="get", description="Obtenir les informations des alliances", guild_ids=[805927681031405578], options=options)
     async def get(self, ctx:SlashContext, type):
-        # await ctx.message.delete()
-        
         self.event.connect()
-        
-        await ctx.send(embed=self.event.set_embed(type))
+        await self.event.send(ctx, type)
 
 
     @commands.command()
@@ -161,8 +192,8 @@ class EVENT_refresh(commands.Cog):
         await ctx.message.delete()
         
         self.event.connect()
-        
-        await ctx.send(embed=self.event.set_embed("batiment_planetaire"))
+        await self.event.send(ctx, "batiment_planetaire")
+
 
 
 
