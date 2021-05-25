@@ -1,4 +1,5 @@
 {
+    "refresh_time": 15.0,
     "batiment_planetaire": {
         "range": "A6:D21",
         "color": [

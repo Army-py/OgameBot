@@ -1,4 +1,5 @@
 import json
+import asyncio
 from enum import Enum
 
 import discord
@@ -34,21 +35,29 @@ class Command:
         with open("./config/config.json", "r") as file:
             config = json.load(file)
             for i in config:
-                self.embed.add_field(name=records[i].value, value=f"Plage : `{(config.get(i))['range']}`\nCouleur de l'embed : `RGB{str((config.get(i))['color']).replace('[', '(').replace(']', ')')}`\nCouleur du texte : `{(config.get(i))['prefix']}`", inline=False)
+                if i == "refresh_time":
+                    self.embed.add_field(name="Temps d'actualisation", value=f"`{config.get(i)}` secondes", inline=False)
+                else:
+                    self.embed.add_field(name=records[i].value, value=f"Plage : `{(config.get(i))['range']}`\nCouleur de l'embed : `RGB{str((config.get(i))['color']).replace('[', '(').replace(']', ')')}`\nCouleur du texte : `{(config.get(i))['prefix']}`", inline=True)
 
 
-    def update_value(self):
+    async def update_value(self):
         with open("./config/config.json", "r") as file:
             config = json.load(file)
             if self.config == "color":
                 colors = (self.value).replace(" ", "").split(",")
                 for i in range(len(colors)): colors[i] = int(colors[i])
                 (config[self.record])[self.config] = colors
+            elif self.config == "refresh_time":
+                (config[self.config]) = float(self.value)
             else:
                 (config[self.record])[self.config] = str(self.value)
         
         with open("./config/config.json", "w") as file:
             json.dump(config, file, indent=4)
+        if self.config == "refresh_time": 
+            await asyncio.sleep(1)
+            self.client.reload_extension(f"cogs.refresh")
 
 
 
@@ -67,6 +76,10 @@ class CMD_config(commands.Cog):
                 {
                     "name":"Afficher la configuration actuelle",
                     "value":"all"
+                },
+                {
+                    "name": "Temps d'actualisation",
+                    "value": "refresh_time"
                 },
                 {
                     "name": "Plage de cellules",
@@ -131,8 +144,8 @@ class CMD_config(commands.Cog):
             cmd.set_embed()
             await ctx.send(embed=cmd.embed)
         else:
-            cmd.update_value()
-            await ctx.send(f"La valeur a été modifiée")
+            await cmd.update_value()
+            await ctx.send(f"La valeur a été modifiée", delete_after=5)
 
 
 

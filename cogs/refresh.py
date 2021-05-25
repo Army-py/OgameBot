@@ -1,7 +1,8 @@
+import json
 import os
 import pickle
+import sys
 from enum import Enum
-import json
 
 import discord
 from discord.ext import commands, tasks
@@ -9,7 +10,6 @@ from discord_slash import SlashContext, cog_ext
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import Flow, InstalledAppFlow
 from googleapiclient.discovery import build
-
 
 
 class prefixes(Enum):
@@ -23,27 +23,32 @@ class Listener:
         self.SAMPLE_SPREADSHEET_ID_input = '1gW7Q4xEHGw_aSez9UuQCjG8CHoa3R0EGO2IWivp1720'
 
 
-    def connect(self):
-        creds = None
-        SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+    async def connect(self):
+        try:
+            creds = None
+            SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-        if os.path.exists('token.pickle'):
-            with open('token.pickle', 'rb') as token:
-                creds = pickle.load(token)
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    './bot config/credentials.json', SCOPES) # here enter the name of your downloaded JSON file
-                creds = flow.run_local_server(port=48625)
-            with open('token.pickle', 'wb') as token:
-                pickle.dump(creds, token)
-    
-        service = build('sheets', 'v4', credentials=creds)
-    
-        # Call the Sheets API
-        self.sheet = service.spreadsheets()
+            if os.path.exists('token.pickle'):
+                with open('token.pickle', 'rb') as token:
+                    creds = pickle.load(token)
+            
+            if not creds or not creds.valid:
+                if creds and creds.expired and creds.refresh_token:
+                    creds.refresh(Request())
+                else:
+                    flow = InstalledAppFlow.from_client_secrets_file(
+                        './bot config/credentials.json', SCOPES) # here enter the name of your downloaded JSON file
+                    creds = await flow.run_local_server(port=48625)
+
+                with open('token.pickle', 'wb') as token:
+                    pickle.dump(creds, token)
+        
+            service = build('sheets', 'v4', credentials=creds)
+        
+            # Call the Sheets API
+            self.sheet = service.spreadsheets()
+        except Exception as e:
+            print(f"--- {e}")
 
 
     def get_values(self, range):
@@ -122,8 +127,7 @@ class EVENT_refresh(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-        self.event = Listener(self.client)
-        # self.event.connect()
+        self.event = Listener(self.client) 
 
         self.refresh.start()
 
@@ -137,62 +141,75 @@ class EVENT_refresh(commands.Cog):
         __import__("is_ready").Is_Ready().event("refresh")
 
 
-    @tasks.loop(minutes=1.0)
+    seconds = (json.load(open("./config/config.json")))["refresh_time"]
+    @tasks.loop(seconds=seconds)
     async def refresh(self):
-        self.event.connect()
-        await self.event.refresh()
+        try:
+            await self.event.connect()
+            await self.event.refresh()
+        except Exception as e:
+            print('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
 
     options = [
         {
-        "name":"type",
-        "description":"Type d'alliance",
-        "required":True,
-        "type":3,
-        "choices":[
-            {
-                "name": "Batiment Planetaire",
-                "value": "batiment_planetaire"
-            },
-            {
-                "name": "Batiment Lunaire",
-                "value": "batiment_lunaire"
-            },
-            {
-                "name": "Recherches",
-                "value": "recherches"
-            },
-            {
-                "name": "Vaisseaux Militaires",
-                "value": "vaisseaux_militaires"
-            },
-            {
-                "name": "Vaisseaux Civils",
-                "value": "vaisseaux_civils"
-            },
-            {
-                "name": "Défense Planetaire",
-                "value": "defense_planetaire"
-            },
-            {
-                "name": "Défense Lunaire",
-                "value": "defense_lunaire"
-            }]
+            "name":"type",
+            "description":"Type d'alliance",
+            "required":True,
+            "type":3,
+            "choices":[
+                {
+                    "name": "Batiment Planetaire",
+                    "value": "batiment_planetaire"
+                },
+                {
+                    "name": "Batiment Lunaire",
+                    "value": "batiment_lunaire"
+                },
+                {
+                    "name": "Recherches",
+                    "value": "recherches"
+                },
+                {
+                    "name": "Vaisseaux Militaires",
+                    "value": "vaisseaux_militaires"
+                },
+                {
+                    "name": "Vaisseaux Civils",
+                    "value": "vaisseaux_civils"
+                },
+                {
+                    "name": "Défense Planetaire",
+                    "value": "defense_planetaire"
+                },
+                {
+                    "name": "Défense Lunaire",
+                    "value": "defense_lunaire"
+                }]
         }
     ]
     # @commands.command()
     @cog_ext.cog_slash(name="get", description="Obtenir les informations des alliances", guild_ids=[805927681031405578], options=options)
     async def get(self, ctx:SlashContext, type):
-        self.event.connect()
+        await self.event.connect()
         await self.event.send(ctx, type)
 
 
     @commands.command()
-    async def send(self, ctx):
+    async def send(self, ctx, type:str):
         await ctx.message.delete()
         
-        self.event.connect()
-        await self.event.send(ctx, "batiment_planetaire")
+        await self.event.connect()
+        if type == "all":
+            await self.event.send(ctx, "batiment_planetaire")
+            await self.event.send(ctx, "batiment_lunaire")
+            await self.event.send(ctx, "recherches")
+            await self.event.send(ctx, "vaisseaux_militaires")
+            await self.event.send(ctx, "vaisseaux_civils")
+            await self.event.send(ctx, "defense_planetaire")
+            await self.event.send(ctx, "defense_lunaire")
+        else:
+            await self.event.send(ctx, type)
 
 
 
