@@ -38,7 +38,7 @@ class Listener:
                 else:
                     flow = InstalledAppFlow.from_client_secrets_file(
                         './bot config/credentials.json', SCOPES) # here enter the name of your downloaded JSON file
-                    creds = await flow.run_local_server(port=48625)
+                    creds = flow.run_local_server(port=8080)
 
                 with open('token.pickle', 'wb') as token:
                     pickle.dump(creds, token)

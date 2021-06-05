@@ -14,7 +14,7 @@ class CMD_reload(commands.Cog):
         try:
             self.client.reload_extension(f"cogs.{cog}")
             print(f"<{datetime.datetime.now().strftime('%d/%m/%Y %H:%M')}> Reload {cog}")
-        except Exception as e:
+        except Exception:
             self.client.unload_extension(f"cogs.{cog}")
 
 
