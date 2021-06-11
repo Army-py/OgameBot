@@ -66,6 +66,11 @@ class CMD_config(commands.Cog):
         self.client = client
 
 
+    @commands.Cog.listener()
+    async def on_ready(self):
+        __import__("is_ready").Is_Ready().command("config")
+
+
     options = [
         {
             "name":"config",
@@ -136,7 +141,7 @@ class CMD_config(commands.Cog):
             "type":3
         }
     ]
-    @cog_ext.cog_slash(name="config", description="Configuration du bot", guild_ids=[805927681031405578], options=options)
+    @cog_ext.cog_slash(name="config", description="Configuration du bot", guild_ids=[799356517962874880], options=options)
     @commands.has_permissions(administrator=True)
     async def config(self, ctx:SlashContext, config, record=None, value=None):
         cmd = Command(self.client, config, record, value)

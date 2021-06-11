@@ -7,9 +7,8 @@ from enum import Enum
 import discord
 from discord.ext import commands, tasks
 from discord_slash import SlashContext, cog_ext
-from google.auth.transport.requests import Request
-from google_auth_oauthlib.flow import Flow, InstalledAppFlow
 from googleapiclient.discovery import build
+from google.oauth2 import service_account
 
 
 class prefixes(Enum):
@@ -25,26 +24,13 @@ class Listener:
 
     async def connect(self):
         try:
-            creds = None
             SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-            if os.path.exists('token.pickle'):
-                with open('token.pickle', 'rb') as token:
-                    creds = pickle.load(token)
-            
-            if not creds or not creds.valid:
-                if creds and creds.expired and creds.refresh_token:
-                    creds.refresh(Request())
-                else:
-                    flow = InstalledAppFlow.from_client_secrets_file(
-                        './bot config/credentials.json', SCOPES) # here enter the name of your downloaded JSON file
-                    creds = flow.run_local_server(port=8080)
+            credentials = None
+            credentials = service_account.Credentials.from_service_account_file('./bot config/credentials.json', scopes=SCOPES)
 
-                with open('token.pickle', 'wb') as token:
-                    pickle.dump(creds, token)
-        
-            service = build('sheets', 'v4', credentials=creds)
-        
+            service = build('sheets', 'v4', credentials=credentials)
+
             # Call the Sheets API
             self.sheet = service.spreadsheets()
         except Exception as e:
@@ -188,11 +174,10 @@ class EVENT_refresh(commands.Cog):
                 }]
         }
     ]
-    # @commands.command()
-    @cog_ext.cog_slash(name="get", description="Obtenir les informations des alliances", guild_ids=[805927681031405578], options=options)
-    async def get(self, ctx:SlashContext, type):
-        await self.event.connect()
-        await self.event.send(ctx, type)
+    # @cog_ext.cog_slash(name="get", description="Obtenir les informations des alliances", guild_ids=[805927681031405578], options=options)
+    # async def get(self, ctx:SlashContext, type):
+    #     await self.event.connect()
+    #     await self.event.send(ctx, type)
 
 
     @commands.command()

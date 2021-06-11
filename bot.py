@@ -29,6 +29,7 @@ async def is_owner(ctx):
 
 @client.event
 async def on_ready():
+    await client.change_presence(activity=discord.Game(name="mettre les records à jour"))
     print(f"<{datetime.datetime.now().strftime('%d/%m/%Y %H:%M')}> Bot is ready")
 
 
