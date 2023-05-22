@@ -27,7 +27,7 @@ class Listener:
             SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
             credentials = None
-            credentials = service_account.Credentials.from_service_account_file('./bot config/credentials.json', scopes=SCOPES)
+            credentials = service_account.Credentials.from_service_account_file('./bot_config/credentials.json', scopes=SCOPES)
 
             service = build('sheets', 'v4', credentials=credentials)
 

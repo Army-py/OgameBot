@@ -13,7 +13,7 @@ cwd = str(cwd)
 
 client = commands.Bot(command_prefix="/", intents=discord.Intents.all())
 slash = SlashCommand(client, override_type = True, sync_commands=True, sync_on_cog_reload=True)
-secret_file = json.load(open(cwd+'/bot config/secret.json'))
+secret_file = json.load(open(cwd+'/bot_config/secret.json'))
 client.config_token = secret_file['token']
 client.remove_command('help')
 
