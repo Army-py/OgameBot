@@ -1,5 +1,23 @@
 # OgameBot
 
+## Dependencies
+- Python 3.8 or higher
+- [Discord.py v2.3.2](https://discordpy.readthedocs.io/en/stable/)
+- [Google API](https://developers.google.com/sheets/api/quickstart/python)
+    - `pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib`
+
+
+## Installation
+- Clone the repository
+- Install the dependencies listed above
+
+
+## Execution
+- Create a Discord bot [here](https://discord.com/developers/applications)
+- Fill in the `bot_config/secret.json` file with the token of your bot
+- Fill in the `bot_config/sheet.json` file with the ID of your Google Sheet file
+- Execute the `bot.py` file with Python 3.8 or higher (`python bot.py`)
+
 ## Google API
 
 ### Service Account
