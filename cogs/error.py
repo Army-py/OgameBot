@@ -1,6 +1,4 @@
-import discord
 from discord.ext import commands
-from discord_slash import SlashContext, cog_ext
 
 
 class Listener(commands.Cog):
@@ -14,7 +12,7 @@ class Listener(commands.Cog):
 
 
     @commands.Cog.listener()
-    async def on_slash_command_error(self, ctx:SlashContext, error):
+    async def on_slash_command_error(self, ctx: commands.Context, error):
         if isinstance(error, commands.CommandNotFound):
             # await ctx.send('Command invalide ! `s!help`', delete_after=5)
             # await ctx.message.delete()
@@ -44,5 +42,5 @@ class Listener(commands.Cog):
 
 
 
-def setup(client):
-    client.add_cog(Listener(client))
+async def setup(client):
+    await client.add_cog(Listener(client))

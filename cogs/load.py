@@ -1,9 +1,9 @@
-import discord
-from discord.ext import commands
 import datetime
-import os 
-from discord_slash import SlashContext, cog_ext
+import os
 
+import discord
+from discord import app_commands
+from discord.ext import commands
 
 
 class CMD_load(commands.Cog):
@@ -17,33 +17,45 @@ class CMD_load(commands.Cog):
 
 
 
-    options = [
-    {
-        "name":"cog",
-        "description":"Cog",
-        "type":3,
-        "required":True,
-        "choices":[]
-    }]
-    for filename in os.listdir("./cogs"): 
-        if filename.endswith('.py'):
-            (options[0])["choices"].append({
-                "name":filename,
-                "value":filename[:-3]
-            })
-    @cog_ext.cog_slash(name="load", description="Charger une extension", guild_ids=[799356517962874880], options=options)
+    # options = [
+    # {
+    #     "name":"cog",
+    #     "description":"Cog",
+    #     "type":3,
+    #     "required":True,
+    #     "choices":[]
+    # }]
+    # for filename in os.listdir("./cogs"): 
+    #     if filename.endswith('.py'):
+    #         (options[0])["choices"].append({
+    #             "name":filename,
+    #             "value":filename[:-3]
+    #         })
+    async def cog_autocomplete(self, interaction: discord.Interaction, current: str):
+        cog_names = []
+        for filename in os.listdir("./cogs"): 
+            if filename.endswith('.py'):
+                cog_names.append(filename[:-3])
+        return [
+            app_commands.Choice(name=cog_names[i], value=cog_names[i])
+            for i in range(len(cog_names))
+        ]
+    
+    # @cog_ext.cog_slash(name="load", description="Charger une extension", guild_ids=[799356517962874880], options=options)
+    @app_commands.command(name="load", description="Charger une extension")
+    @app_commands.autocomplete(cog=cog_autocomplete)
     @commands.has_permissions(administrator=True)
-    async def load(self, ctx, cog):
+    async def load(self, ctx: discord.Interaction, cog: str):
         try: 
-            self.client.load_extension(f"cogs.{cog}")
-            await ctx.send(f"{cog} chargé !")
+            await self.client.load_extension(f"cogs.{cog}")
+            await ctx.response.send_message(f"{cog} chargé !")
             print(f"<{datetime.datetime.now().strftime('%d/%m/%Y %H:%M')}> Load {cog}")
         except Exception as e: 
-            await ctx.send(f"**Erreur pour `{cog}.py`**: {e}")
+            await ctx.response.send_message(f"**Erreur pour `{cog}.py`**: {e}")
             print(e)
 
 
 
 
-def setup(client):
-    client.add_cog(CMD_load(client))
+async def setup(client):
+    await client.add_cog(CMD_load(client))

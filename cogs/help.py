@@ -1,8 +1,5 @@
-import json
-
 import discord
 from discord.ext import commands
-from discord_slash import SlashContext, cog_ext
 
 
 class Help(commands.Cog):
@@ -14,8 +11,9 @@ class Help(commands.Cog):
         __import__("is_ready").Is_Ready().command("help")
 
     
-    @cog_ext.cog_slash(name="help", description="Permet d'avoir la liste des commandes", guild_ids=[799356517962874880])
-    async def help(self, ctx: SlashContext):
+    # @cog_ext.cog_slash(name="help", description="Permet d'avoir la liste des commandes", guild_ids=[799356517962874880])
+    @commands.hybrid_command(name="help", description="Permet d'avoir la liste des commandes")
+    async def help(self, ctx: commands.Context):
         embed = discord.Embed(
             title = "Liste des commandes",
             colour = discord.Colour.random()
@@ -27,10 +25,10 @@ class Help(commands.Cog):
         embed.add_field(name="`/reload`", value="Reharger une extension", inline=False)
         embed.add_field(name="`/cogs`", value="Affiche la liste des extensions et leurs état", inline=False)
         # embed.add_field(name="`/setprefix <prefixe>`", value="Permet de modifier pour soit le prefixe du bot lors de l'utilisation d'une commande ***(Cooldown de 2min)***", inline=False)
-        embed.set_footer(text="Demandé par " + ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        embed.set_footer(text="Demandé par " + ctx.author.display_name, icon_url=ctx.author.avatar.url)
         await ctx.send(embed=embed)
         
 
 
-def setup(client):
-    client.add_cog(Help(client))
+async def setup(client):
+    await client.add_cog(Help(client))

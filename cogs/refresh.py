@@ -1,14 +1,12 @@
 import json
-import os
-import pickle
 import sys
 from enum import Enum
 
 import discord
+from discord import app_commands
 from discord.ext import commands, tasks
-from discord_slash import SlashContext, cog_ext
-from googleapiclient.discovery import build
 from google.oauth2 import service_account
+from googleapiclient.discovery import build
 
 
 class prefixes(Enum):
@@ -90,10 +88,16 @@ class Listener:
             json.dump(messages_id, file, indent=4)
 
 
-    async def send(self, ctx, type):
+    async def send(self, ctx: discord.Interaction, type):
         image = discord.File(f"./files/images/{type}.png", filename=f"{type}.png")
-        msg = await ctx.send(file=image, embed=self.set_embed(type))
+        msg = await ctx.channel.send(file=image, embed=self.set_embed(type))
         self.update_message_id(msg, type)
+
+
+    # async def follow(self, ctx: discord.Interaction, type):
+    #     image = discord.File(f"./files/images/{type}.png", filename=f"{type}.png")
+    #     msg = await ctx.followup.send(file=image, embed=self.set_embed(type))
+    #     self.update_message_id(msg, type)
 
 
     async def refresh(self):
@@ -115,7 +119,7 @@ class EVENT_refresh(commands.Cog):
 
         self.event = Listener(self.client) 
 
-        self.refresh.start()
+        # self.refresh.start()
 
 
     def cog_unload(self):
@@ -137,53 +141,58 @@ class EVENT_refresh(commands.Cog):
             print('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
 
-    options = [
-        {
-            "name":"type",
-            "description":"Type d'alliance",
-            "required":True,
-            "type":3,
-            "choices":[
-                {
-                    "name": "Batiment Planetaire",
-                    "value": "batiment_planetaire"
-                },
-                {
-                    "name": "Batiment Lunaire",
-                    "value": "batiment_lunaire"
-                },
-                {
-                    "name": "Recherches",
-                    "value": "recherches"
-                },
-                {
-                    "name": "Vaisseaux Militaires",
-                    "value": "vaisseaux_militaires"
-                },
-                {
-                    "name": "Vaisseaux Civils",
-                    "value": "vaisseaux_civils"
-                },
-                {
-                    "name": "Défense Planetaire",
-                    "value": "defense_planetaire"
-                },
-                {
-                    "name": "Défense Lunaire",
-                    "value": "defense_lunaire"
-                }]
-        }
-    ]
+    # options = [
+    #     {
+    #         "name":"type",
+    #         "description":"Type d'alliance",
+    #         "required":True,
+    #         "type":3,
+    #         "choices":[
+    #             {
+    #                 "name": "Batiment Planetaire",
+    #                 "value": "batiment_planetaire"
+    #             },
+    #             {
+    #                 "name": "Batiment Lunaire",
+    #                 "value": "batiment_lunaire"
+    #             },
+    #             {
+    #                 "name": "Recherches",
+    #                 "value": "recherches"
+    #             },
+    #             {
+    #                 "name": "Vaisseaux Militaires",
+    #                 "value": "vaisseaux_militaires"
+    #             },
+    #             {
+    #                 "name": "Vaisseaux Civils",
+    #                 "value": "vaisseaux_civils"
+    #             },
+    #             {
+    #                 "name": "Défense Planetaire",
+    #                 "value": "defense_planetaire"
+    #             },
+    #             {
+    #                 "name": "Défense Lunaire",
+    #                 "value": "defense_lunaire"
+    #             }]
+    #     }
+    # ]
     # @cog_ext.cog_slash(name="get", description="Obtenir les informations des alliances", guild_ids=[805927681031405578], options=options)
     # async def get(self, ctx:SlashContext, type):
     #     await self.event.connect()
     #     await self.event.send(ctx, type)
+    async def type_autocomplete(self, interaction: discord.Interaction, current: str):
+        record_names = ["Batiment Planetaire", "Batiment Lunaire", "Recherches", "Vaisseaux Militaires", "Vaisseaux Civils", "Défense Planetaire", "Défense Lunaire"]
+        record_values = ["batiment_planetaire", "batiment_lunaire", "recherches", "vaisseaux_militaires", "vaisseaux_civils", "defense_planetaire", "defense_lunaire"]
+        return [
+            app_commands.Choice(name=record_names[i], value=record_values[i])
+            for i in range(len(record_names))
+        ]
 
-
-    @commands.command()
-    async def send(self, ctx, type:str):
-        await ctx.message.delete()
-        
+    @app_commands.command()
+    @app_commands.autocomplete(type=type_autocomplete)
+    async def send(self, ctx: discord.Interaction, type: str):        
         await self.event.connect()
         if type == "all":
             await self.event.send(ctx, "batiment_planetaire")
@@ -201,5 +210,5 @@ class EVENT_refresh(commands.Cog):
 
 
 
-def setup(client):
-    client.add_cog(EVENT_refresh(client))
+async def setup(client):
+    await client.add_cog(EVENT_refresh(client))

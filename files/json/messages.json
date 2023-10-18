@@ -1,30 +1,30 @@
 {
     "batiment_planetaire": {
-        "message_id": 847187948230410290,
-        "channel_id": 799063346611617832
+        "message_id": 1164330865543884932,
+        "channel_id": 1164291764467806210
     },
     "batiment_lunaire": {
-        "message_id": 846385556396179508,
-        "channel_id": 841433998785118218
+        "message_id": 1164330868094013441,
+        "channel_id": 1164291764467806210
     },
     "recherches": {
-        "message_id": 846385560296751104,
-        "channel_id": 841433998785118218
+        "message_id": 1164330870111469578,
+        "channel_id": 1164291764467806210
     },
     "vaisseaux_militaires": {
-        "message_id": 846385563124629564,
-        "channel_id": 841433998785118218
+        "message_id": 1164330872191860816,
+        "channel_id": 1164291764467806210
     },
     "vaisseaux_civils": {
-        "message_id": 846385565808853003,
-        "channel_id": 841433998785118218
+        "message_id": 1164330874347720804,
+        "channel_id": 1164291764467806210
     },
     "defense_planetaire": {
-        "message_id": 846385576499347519,
-        "channel_id": 841433998785118218
+        "message_id": 1164330876864303155,
+        "channel_id": 1164291764467806210
     },
     "defense_lunaire": {
-        "message_id": 846385579712053288,
-        "channel_id": 841433998785118218
+        "message_id": 1164330878835626015,
+        "channel_id": 1164291764467806210
     }
 }

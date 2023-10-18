@@ -1,10 +1,10 @@
-import json
 import asyncio
+import json
 from enum import Enum
 
 import discord
+from discord import app_commands
 from discord.ext import commands
-from discord_slash import SlashContext, cog_ext
 
 
 class records(Enum):
@@ -57,7 +57,7 @@ class Command:
             json.dump(config, file, indent=4)
         if self.config == "refresh_time": 
             await asyncio.sleep(1)
-            self.client.reload_extension(f"cogs.refresh")
+            await self.client.reload_extension(f"cogs.refresh")
 
 
 
@@ -71,88 +71,107 @@ class CMD_config(commands.Cog):
         __import__("is_ready").Is_Ready().command("config")
 
 
-    options = [
-        {
-            "name":"config",
-            "description":"Choix des configurations",
-            "required":True,
-            "type":3,
-            "choices":[
-                {
-                    "name":"Afficher la configuration actuelle",
-                    "value":"all"
-                },
-                {
-                    "name": "Temps d'actualisation",
-                    "value": "refresh_time"
-                },
-                {
-                    "name": "Plage de cellules",
-                    "value": "range"
-                },
-                {
-                    "name": "Couleur de l'embed",
-                    "value": "color"
-                },
-                {
-                    "name": "Couleur du texte",
-                    "value": "prefix"
-                }]
-        },
-        {
-            "name":"records",
-            "description":"Choix des records",
-            "required": False,
-            "type":3,
-            "choices":[
-                {
-                    "name": "Batiment Planetaire",
-                    "value": "batiment_planetaire"
-                },
-                {
-                    "name": "Batiment Lunaire",
-                    "value": "batiment_lunaire"
-                },
-                {
-                    "name": "Recherches",
-                    "value": "recherches"
-                },
-                {
-                    "name": "Vaisseaux Militaires",
-                    "value": "vaisseaux_militaires"
-                },
-                {
-                    "name": "Vaisseaux Civils",
-                    "value": "vaisseaux_civils"
-                },
-                {
-                    "name": "Défense Planetaire",
-                    "value": "defense_planetaire"
-                },
-                {
-                    "name": "Défense Lunaire",
-                    "value": "defense_lunaire"
-                }]
-        },
-        {
-            "name":"value",
-            "description":"Nouvelle valeur de la configuration",
-            "required":False,
-            "type":3
-        }
-    ]
-    @cog_ext.cog_slash(name="config", description="Configuration du bot", guild_ids=[799356517962874880], options=options)
+    # options = [
+    #     {
+    #         "name":"config",
+    #         "description":"Choix des configurations",
+    #         "required":True,
+    #         "type":3,
+    #         "choices":[
+    #             {
+    #                 "name":"Afficher la configuration actuelle",
+    #                 "value":"all"
+    #             },
+    #             {
+    #                 "name": "Temps d'actualisation",
+    #                 "value": "refresh_time"
+    #             },
+    #             {
+    #                 "name": "Plage de cellules",
+    #                 "value": "range"
+    #             },
+    #             {
+    #                 "name": "Couleur de l'embed",
+    #                 "value": "color"
+    #             },
+    #             {
+    #                 "name": "Couleur du texte",
+    #                 "value": "prefix"
+    #             }]
+    #     },
+    #     {
+    #         "name":"records",
+    #         "description":"Choix des records",
+    #         "required": False,
+    #         "type":3,
+    #         "choices":[
+    #             {
+    #                 "name": "Batiment Planetaire",
+    #                 "value": "batiment_planetaire"
+    #             },
+    #             {
+    #                 "name": "Batiment Lunaire",
+    #                 "value": "batiment_lunaire"
+    #             },
+    #             {
+    #                 "name": "Recherches",
+    #                 "value": "recherches"
+    #             },
+    #             {
+    #                 "name": "Vaisseaux Militaires",
+    #                 "value": "vaisseaux_militaires"
+    #             },
+    #             {
+    #                 "name": "Vaisseaux Civils",
+    #                 "value": "vaisseaux_civils"
+    #             },
+    #             {
+    #                 "name": "Défense Planetaire",
+    #                 "value": "defense_planetaire"
+    #             },
+    #             {
+    #                 "name": "Défense Lunaire",
+    #                 "value": "defense_lunaire"
+    #             }]
+    #     },
+    #     {
+    #         "name":"value",
+    #         "description":"Nouvelle valeur de la configuration",
+    #         "required":False,
+    #         "type":3
+    #     }
+    # ]
+    async def config_autocomplete(self, interaction: discord.Interaction, current: str):
+        config_names = ["Afficher la configuration actuelle", "Temps d'actualisation", "Plage de cellules", "Couleur de l'embed", "Couleur du texte"]
+        config_values = ["all", "refresh_time", "range", "color", "prefix"]
+        return [
+            app_commands.Choice(name=config_names[i], value=config_values[i])
+            for i in range(len(config_names))
+        ]
+    
+    async def record_autocomplete(self, interaction: discord.Interaction, current: str):
+        record_names = ["Batiment Planetaire", "Batiment Lunaire", "Recherches", "Vaisseaux Militaires", "Vaisseaux Civils", "Défense Planetaire", "Défense Lunaire"]
+        record_values = ["batiment_planetaire", "batiment_lunaire", "recherches", "vaisseaux_militaires", "vaisseaux_civils", "defense_planetaire", "defense_lunaire"]
+        return [
+            app_commands.Choice(name=record_names[i], value=record_values[i])
+            for i in range(len(record_names))
+        ]
+    
+    # @cog_ext.cog_slash(name="config", description="Configuration du bot", guild_ids=[799356517962874880], options=options)
+    # @commands.has_permissions(administrator=True)
+    @app_commands.command(name="config", description="Configuration du bot")
+    @app_commands.autocomplete(config=config_autocomplete, record=record_autocomplete)
     @commands.has_permissions(administrator=True)
-    async def config(self, ctx:SlashContext, config, record=None, value=None):
+    async def config(self, interaction: discord.Interaction, config: str, record: str = None, value: str=None):
         cmd = Command(self.client, config, record, value)
         if config == "all":
             cmd.set_embed()
-            await ctx.send(embed=cmd.embed)
+            await interaction.response.send_message(embed=cmd.embed)
         else:
             await cmd.update_value()
-            await ctx.send(f"La valeur a été modifiée", delete_after=5)
+            await interaction.response.send_message("La valeur a été modifiée")
 
 
 
-def setup(client):
-    client.add_cog(CMD_config(client))
+async def setup(client):
+    await client.add_cog(CMD_config(client))

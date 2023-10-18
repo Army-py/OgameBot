@@ -1,10 +1,7 @@
 import os
-import sys
 
 import discord
-from discord.ext import commands, tasks
-from discord.ext.commands.cog import Cog
-from discord_slash import SlashContext, cog_ext
+from discord.ext import commands
 
 
 class Status:
@@ -20,12 +17,12 @@ class Status:
                 self.files.append(filename)
 
 
-    def get_status(self):
+    async def get_status(self):
         for filename in self.files:
             try:
-                self.client.load_extension(f"cogs.{filename[:-3]}")
+                await self.client.load_extension(f"cogs.{filename[:-3]}")
                 cog = "`Unload 🔴`"
-                self.client.unload_extension(f"cogs.{filename[:-3]}")
+                await self.client.unload_extension(f"cogs.{filename[:-3]}")
             except Exception as e:
                 e = str(e)
                 if e.endswith("is already loaded."):
@@ -60,13 +57,13 @@ class Cogs:
         )
 
 
-    def get_files(self):
+    async def get_files(self):
         for filename in os.listdir("./cogs"):
             if filename.endswith('.py'):
                 try:
-                    self.client.load_extension(f"cogs.{filename[:-3]}")
+                    await self.client.load_extension(f"cogs.{filename[:-3]}")
                     self.files_unload.append(f"➥ {filename[:-3]} `Unload 🔴`")
-                    self.client.unload_extension(f"cogs.{filename[:-3]}")
+                    await self.client.unload_extension(f"cogs.{filename[:-3]}")
                 except Exception as e:
                     e = str(e)
                     if e.endswith("is already loaded."):
@@ -94,34 +91,26 @@ class CMD_cogs(commands.Cog):
     async def status(self, ctx, cog:str):
         s = Status(self.client, cog)
         s.sort_files()
-        s.get_status()
+        await s.get_status()
         s.set_embed()
         await ctx.send(embed=s.embed, delete_after=60)
 
 
-    options = [
-    {
-        "name":"cog",
-        "description":"Cog",
-        "type":3,
-        "required":False,
-    }]
-    # @commands.command(aliases=["cog"])
-    @cog_ext.cog_slash(name="cogs", description="Affiche la liste des cogs", guild_ids=[799356517962874880], options=options)
+    @commands.hybrid_command(aliases=["cog"], description="Affiche la liste des cogs")
     @commands.has_permissions(administrator=True)
-    async def cogs(self, ctx:SlashContext, *, cog:str=None):
+    async def cogs(self, ctx: commands.Context, *, cog: str=None):
         # await ctx.message.delete()
         if cog is not None: return await self.status(ctx, cog)
         
         c = Cogs(self.client)
-        c.get_files()
+        await c.get_files()
         
         c.set_embed(c.files_load, "➤ Load", "➥ Load files")
         c.set_embed(c.files_load_error, "➤ Load Error", "➥ Load error files")
         c.set_embed(c.files_unload, "➤ Unload", "➥ Unload files")
         
-        await ctx.send(embed=c.embed, delete_after=30)
+        await ctx.send(embed=c.embed)
     
 
-def setup(client):
-    client.add_cog(CMD_cogs(client))
+async def setup(client):
+    await client.add_cog(CMD_cogs(client))
