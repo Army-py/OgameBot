@@ -17,12 +17,14 @@ class prefixes(Enum):
 class Listener:
     def __init__(self, client):
         self.client = client
-        self.SAMPLE_SPREADSHEET_ID_input = '1gW7Q4xEHGw_aSez9UuQCjG8CHoa3R0EGO2IWivp1720'
+        self.sheet = json.load(open("./bot_config/sheet.json"))
+        # self.SAMPLE_SPREADSHEET_ID_input = '1DnQRzlbQj13YhzqnwfdZYxDzCoLUKsm40dvrTCgut1A'
+        self.SAMPLE_SPREADSHEET_ID_input = self.sheet["spreadsheet_id"]
 
 
     async def connect(self):
         try:
-            SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+            SCOPES = [self.sheet["spreadsheet_scope"]]
 
             credentials = None
             credentials = service_account.Credentials.from_service_account_file('./bot_config/credentials.json', scopes=SCOPES)
