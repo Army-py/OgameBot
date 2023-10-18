@@ -1,33 +1,32 @@
 # OgameBot
 
-
 ## Google API
 
-### Compte de service
-- Pour utiliser les API Google, il faut créer un compte de service.
-- Pour cela, rendez-vous sur [cette page](https://console.cloud.google.com/iam-admin/serviceaccounts) et sélectionnez le projet que vous voulez utiliser, ou créez-en un nouveau.
-- Puis cliquez sur `Créer des identifiants` puis `Compte de service`.
-- Vous pouvez ensuite choisir le nom du compte de service.
-- Cliquez ensuite sur `Créer et continuer`.
-- Sur la page suivante, vous pouvez choisir les rôles du compte de service.
-- Pour ce projet, il faut choisir `Projet` puis `Propriétaire`, `Editeur` et `Lecteur`.
-- Cliquez ensuite sur `Continuer`.
+### Service Account
+- To use Google APIs, you need to create a service account.
+- To do this, go to [this page](https://console.cloud.google.com/iam-admin/serviceaccounts) and select the project you want to use, or create a new one.
+- Then click on `Create credentials` and then `Service account`.
+- You can then choose the name of the service account.
+- Then click on `Create and continue`.
+- On the next page, you can choose the roles of the service account.
+- For this project, you need to choose `Project` then `Owner`, `Editor`, and `Viewer`.
+- Then click on `Continue`.
 
 
 ### credentials.json
-- Pour obtenir une clé, qui sera sous un fichier .json, rendez-vous dans l'interface du compte de service que vous voudrez utiliser.
-- Allez ensuite dans `Clés` dans la barre supérieure, puis `Ajouter une clé` et enfin `Créer une clé`.
-- Vous choisirez ensuite `JSON` comme type de clé, et vous obtiendrez un fichier .json.
-- Placer ensuite ce fichier dans le dossier `bot_config` qui se trouve dans la racine du projet, puis renommez-le en `credentials.json`.
+- To obtain a key, which will be in a .json file, go to the interface of the service account you want to use.
+- Then go to `Keys` in the top bar, then `Add key` and finally `Create key`.
+- You will then choose `JSON` as the key type, and you will get a .json file.
+- Then place this file in the `bot_config` folder located in the root of the project, and rename it to `credentials.json`.
 
 
 ### Google Sheet
-- Pour utiliser les API Google Sheet, il faudra préalablement créer un fichier Google Sheet.
-- Pour cela, rendez-vous sur [cette page](https://docs.google.com/spreadsheets/u/0/) et cliquez sur `Nouveau` puis `Google Sheets`.
-- Vous pouvez ensuite choisir le nom du fichier.
-- Récupérer l'adresse mail du compte de service que vous avez créé précédemment, dans l'interface du compte de service.
-- Allez ensuite dans le fichier Google Sheet que vous avez créé, et cliquez sur `Partager` en haut à droite.
-- Collez l'adresse mail du compte de service dans la barre de recherche, et sélectionnez les droits appropriés.
-- Vous pouvez ensuite récupérer l'ID du fichier Google Sheet dans l'URL du fichier. Il s'agit de la suite de caractères après `/d/` et avant `/edit`.
-- Vous pouvez ensuite placer l'ID du fichier dans le fichier `bot_config/sheet.json`.
+- To use Google Sheet APIs, you will need to create a Google Sheet file beforehand.
+- To do this, go to [this page](https://docs.google.com/spreadsheets/u/0/) and click on `New` then `Google Sheets`.
+- You can then choose the name of the file.
+- Retrieve the email address of the service account you created earlier, in the service account interface.
+- Then go to the Google Sheet file you created, and click on `Share` in the top right corner.
+- Paste the email address of the service account into the search bar, and select the appropriate rights.
+- You can then retrieve the ID of the Google Sheet file in the file's URL. It is the string of characters after `/d/` and before `/edit`.
+- You can then place the file ID in the `bot_config/sheet.json` file.
 
