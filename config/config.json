@@ -1,66 +1,75 @@
 {
     "refresh_time": 30.0,
-    "batiment_planetaire": {
-        "range": "A6:D21",
-        "color": [
-            10,
-            10,
-            10
-        ],
-        "prefix": "css"
-    },
-    "batiment_lunaire": {
-        "range": "A23:D30",
-        "color": [
-            190,
-            158,
-            95
-        ],
-        "prefix": "fix"
-    },
-    "recherches": {
-        "range": "A32:D47",
-        "color": [
-            26,
-            132,
-            159
-        ],
-        "prefix": "md"
-    },
-    "vaisseaux_militaires": {
-        "range": "A49:D58",
-        "color": [
-            182,
-            10,
-            10
-        ],
-        "prefix": "diff"
-    },
-    "vaisseaux_civils": {
-        "range": "A60:D65",
-        "color": [
-            182,
-            10,
-            10
-        ],
-        "prefix": "diff"
-    },
-    "defense_planetaire": {
-        "range": "A67:D74",
-        "color": [
-            135,
-            80,
-            9
-        ],
-        "prefix": "fix"
-    },
-    "defense_lunaire": {
-        "range": "A76:D81",
-        "color": [
-            111,
-            111,
-            111
-        ],
-        "prefix": "css"
+    "structure": {
+        "batiment_planetaire": {
+            "name": "Batiments Planetaires",
+            "range": "A6:D21",
+            "color": [
+                10,
+                10,
+                10
+            ],
+            "prefix": "css"
+        },
+        "batiment_lunaire": {
+            "name": "Batiments Lunaires",
+            "range": "A23:D30",
+            "color": [
+                190,
+                158,
+                95
+            ],
+            "prefix": "fix"
+        },
+        "recherches": {
+            "name":  "Recherches",
+            "range": "A32:D47",
+            "color": [
+                26,
+                132,
+                159
+            ],
+            "prefix": "md"
+        },
+        "vaisseaux_militaires": {
+            "name": "Vaisseaux Militaires",
+            "range": "A49:D58",
+            "color": [
+                182,
+                10,
+                10
+            ],
+            "prefix": "diff"
+        },
+        "vaisseaux_civils": {
+            "name": "Vaisseaux Civils",
+            "range": "A60:D65",
+            "color": [
+                182,
+                10,
+                10
+            ],
+            "prefix": "diff"
+        },
+        "defense_planetaire": {
+            "name": "Defense Planetaire",
+            "range": "A67:D74",
+            "color": [
+                135,
+                80,
+                9
+            ],
+            "prefix": "fix"
+        },
+        "defense_lunaire": {
+            "name": "Defense Lunaire",
+            "range": "A76:D81",
+            "color": [
+                111,
+                111,
+                111
+            ],
+            "prefix": "css"
+        }
     }
 }
