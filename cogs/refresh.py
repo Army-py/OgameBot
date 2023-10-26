@@ -17,14 +17,15 @@ class prefixes(Enum):
 class Listener:
     def __init__(self, client):
         self.client = client
-        self.sheet = json.load(open("./bot_config/sheet.json"))
+        self.open_config()
+        self.sheet_config = json.load(open("./bot_config/sheet.json"))
         # self.SAMPLE_SPREADSHEET_ID_input = '1DnQRzlbQj13YhzqnwfdZYxDzCoLUKsm40dvrTCgut1A'
-        self.SAMPLE_SPREADSHEET_ID_input = self.sheet["spreadsheet_id"]
+        self.SAMPLE_SPREADSHEET_ID_input = self.sheet_config["spreadsheet_id"]
 
 
-    async def connect(self):
+    def connect(self):
         try:
-            SCOPES = [self.sheet["spreadsheet_scope"]]
+            SCOPES = [self.sheet_config["spreadsheet_scope"]]
 
             credentials = None
             credentials = service_account.Credentials.from_service_account_file('./bot_config/credentials.json', scopes=SCOPES)
@@ -34,7 +35,7 @@ class Listener:
             # Call the Sheets API
             self.sheet = service.spreadsheets()
         except Exception as e:
-            print(f"--- {e}")
+            print('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
 
     def get_values(self, range):
@@ -46,7 +47,7 @@ class Listener:
 
     def format_values(self, range):
         data = []
-        for i in self.get_values((self.config[range])["range"]):
+        for i in self.get_values((self.config["structure"][range])["range"]):
             data.append(' - '.join([f"{lst}" for lst in i]))
         return data
 
@@ -57,15 +58,14 @@ class Listener:
 
 
     def get_color(self, range):
-        self.color = (self.config[range])["color"]
+        self.color = (self.config["structure"][range])["color"]
 
 
     def get_language(self, range):
-        self.language = (self.config[range])["prefix"]
+        self.language = (self.config["structure"][range])["prefix"]
 
 
     def set_embed(self, range):
-        self.open_config()
         self.get_color(range)
         self.get_language(range)
 
@@ -103,15 +103,15 @@ class Listener:
 
 
     async def refresh(self):
-        with open("./files/json/messages.json", "r") as file:
+        with open("./files/json/messages.json", "r", encoding="utf8") as file:
             messages_id = json.load(file)
             for i in messages_id:
-                try:
-                    channel = self.client.get_channel((messages_id.get(i))["channel_id"])
-                    msg = await channel.fetch_message((messages_id.get(i))["message_id"])
+                channel = self.client.get_channel((messages_id.get(i))["channel_id"])
+                if channel is None: continue
+                
+                msg: discord.Message = await channel.fetch_message((messages_id.get(i))["message_id"])
+                if msg.embeds[0].description != self.set_embed(i).description:
                     await msg.edit(embed=self.set_embed(i))
-                except Exception:
-                    pass
 
 
 
@@ -120,8 +120,9 @@ class EVENT_refresh(commands.Cog):
         self.client = client
 
         self.event = Listener(self.client) 
+        self.event.connect()
 
-        # self.refresh.start()
+        self.refresh.start()
 
 
     def cog_unload(self):
@@ -137,7 +138,6 @@ class EVENT_refresh(commands.Cog):
     @tasks.loop(seconds=seconds)
     async def refresh(self):
         try:
-            await self.event.connect()
             await self.event.refresh()
         except Exception as e:
             print('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
@@ -185,8 +185,8 @@ class EVENT_refresh(commands.Cog):
     #     await self.event.connect()
     #     await self.event.send(ctx, type)
     async def type_autocomplete(self, interaction: discord.Interaction, current: str):
-        record_names = ["Batiment Planetaire", "Batiment Lunaire", "Recherches", "Vaisseaux Militaires", "Vaisseaux Civils", "Défense Planetaire", "Défense Lunaire"]
-        record_values = ["batiment_planetaire", "batiment_lunaire", "recherches", "vaisseaux_militaires", "vaisseaux_civils", "defense_planetaire", "defense_lunaire"]
+        record_names = [self.event.config["structure"][k]["name"] for k in self.event.config["structure"].keys()]
+        record_values = [k for k in self.event.config["structure"].keys()]
         return [
             app_commands.Choice(name=record_names[i], value=record_values[i])
             for i in range(len(record_names))
@@ -194,16 +194,19 @@ class EVENT_refresh(commands.Cog):
 
     @app_commands.command()
     @app_commands.autocomplete(type=type_autocomplete)
+    @commands.has_permissions(administrator=True)
     async def send(self, ctx: discord.Interaction, type: str):        
-        await self.event.connect()
         if type == "all":
-            await self.event.send(ctx, "batiment_planetaire")
-            await self.event.send(ctx, "batiment_lunaire")
-            await self.event.send(ctx, "recherches")
-            await self.event.send(ctx, "vaisseaux_militaires")
-            await self.event.send(ctx, "vaisseaux_civils")
-            await self.event.send(ctx, "defense_planetaire")
-            await self.event.send(ctx, "defense_lunaire")
+            record_values = [k for k in self.event.config["structure"].keys()]
+            # await self.event.send(ctx, "batiment_planetaire")
+            # await self.event.send(ctx, "batiment_lunaire")
+            # await self.event.send(ctx, "recherches")
+            # await self.event.send(ctx, "vaisseaux_militaires")
+            # await self.event.send(ctx, "vaisseaux_civils")
+            # await self.event.send(ctx, "defense_planetaire")
+            # await self.event.send(ctx, "defense_lunaire")
+            for i in record_values:
+                await self.event.send(ctx, i)
         else:
             await self.event.send(ctx, type)
 
