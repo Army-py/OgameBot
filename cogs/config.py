@@ -27,13 +27,13 @@ class Command:
             
             for i in config["structure"].keys():
                 if i == "*": continue
-                else: self.embed.add_field(name=config['structure'][i]['name'], value=f"Plage : `{config['structure'][i]['range']}`\nCouleur de l'embed : `RGB{str(config['structure'][i]['color']).replace('[', '(').replace(']', ')')}`\nCouleur du texte : `{config['structure'][i]['prefix']}`", inline=True)
+                else: self.embed.add_field(name=config['structure'][i]['name'], value=f"Plage : `{config['structure'][i]['range']}`\nCouleur de l'embed : `RGB{str(config['structure'][i]['rgb_color']).replace('[', '(').replace(']', ')')}`\nCouleur du texte : `{config['structure'][i]['code_bloc_prefix']}`", inline=True)
 
 
     async def update_value(self):
         with open("./config/config.json", "r", encoding="utf8") as file:
             config = json.load(file)
-            if self.config == "color":
+            if self.config == "rgb_color":
                 colors = (self.value).replace(" ", "").split(",")
                 for i in range(len(colors)): colors[i] = int(colors[i])
                 config["structure"][self.record][self.config] = colors
@@ -45,8 +45,7 @@ class Command:
         with open("./config/config.json", "w", encoding="utf8") as file:
             json.dump(config, file, indent=4)
         await asyncio.sleep(1)
-        if self.config == "refresh_time": 
-            await self.client.reload_extension(f"cogs.refresh")
+        await self.client.reload_extension(f"cogs.refresh")
         await self.client.reload_extension(f"cogs.config")
 
 
@@ -63,8 +62,6 @@ class CMD_config(commands.Cog):
 
 
     async def config_autocomplete(self, interaction: discord.Interaction, current: str):
-        # config_names = ["Afficher la configuration actuelle", "Temps d'actualisation", "Plage de cellules", "Couleur de l'embed", "Couleur du texte", "Nom des bâtiments"]
-        # config_values = ["*", "refresh_time", "range", "color", "prefix", "name"]
         config_keys = [k for k in self.config["config"].keys()]
         config_values = [self.config["config"][k] for k in config_keys]
         return [

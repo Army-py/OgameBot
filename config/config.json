@@ -7,80 +7,80 @@
         "batiment_planetaire": {
             "name": "B\u00e2timents Planetaires",
             "range": "A6:D21",
-            "color": [
+            "rgb_color": [
                 10,
                 10,
                 10
             ],
-            "prefix": "css"
+            "code_bloc_prefix": "css"
         },
         "batiment_lunaire": {
             "name": "B\u00e2timents Lunaires",
             "range": "A23:D30",
-            "color": [
+            "rgb_color": [
                 190,
                 158,
                 95
             ],
-            "prefix": "fix"
+            "code_bloc_prefix": "fix"
         },
         "recherches": {
             "name": "Recherches",
             "range": "A32:D47",
-            "color": [
+            "rgb_color": [
                 26,
                 132,
                 159
             ],
-            "prefix": "md"
+            "code_bloc_prefix": "md"
         },
         "vaisseaux_militaires": {
             "name": "Vaisseaux Militaires",
             "range": "A49:D58",
-            "color": [
+            "rgb_color": [
                 182,
                 10,
                 10
             ],
-            "prefix": "diff"
+            "code_bloc_prefix": "diff"
         },
         "vaisseaux_civils": {
             "name": "Vaisseaux Civils",
             "range": "A60:D65",
-            "color": [
+            "rgb_color": [
                 182,
                 10,
                 10
             ],
-            "prefix": "diff"
+            "code_bloc_prefix": "diff"
         },
         "defense_planetaire": {
             "name": "D\u00e9fense Planetaire",
             "range": "A67:D74",
-            "color": [
+            "rgb_color": [
                 135,
                 80,
                 9
             ],
-            "prefix": "fix"
+            "code_bloc_prefix": "fix"
         },
         "defense_lunaire": {
             "name": "D\u00e9fense Lunaire",
             "range": "A76:D81",
-            "color": [
+            "rgb_color": [
                 111,
                 111,
                 111
             ],
-            "prefix": "css"
+            "code_bloc_prefix": "css"
         }
     },
     "config": {
         "*": "Afficher la configuration actuelle",
         "refresh_time": "Temps d'actualisation",
         "range": "Plage de cellules",
-        "color": "Couleur de l'embed",
-        "prefix": "Couleur du texte",
+        "rgb_color": "Couleur de l'embed",
+        "code_bloc_prefix": "Couleur du texte",
         "name": "Nom des b\u00e2timents"
     }
 }

@@ -59,11 +59,11 @@ class Listener:
 
 
     def get_color(self, range):
-        self.color = (self.config["structure"][range])["color"]
+        self.color = (self.config["structure"][range])["rgb_color"]
 
 
     def get_language(self, range):
-        self.language = (self.config["structure"][range])["prefix"]
+        self.language = (self.config["structure"][range])["code_bloc_prefix"]
 
 
     def set_embed(self, range):
@@ -132,7 +132,6 @@ class EVENT_refresh(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         __import__("is_ready").Is_Ready().event("refresh")
-        await self.event.connect()
 
 
     seconds = (json.load(open("./config/config.json")))["refresh_time"]
@@ -171,4 +170,6 @@ class EVENT_refresh(commands.Cog):
 
 
 async def setup(client):
-    await client.add_cog(EVENT_refresh(client))
+    refresh = EVENT_refresh(client)
+    await refresh.event.connect()
+    await client.add_cog(refresh)
