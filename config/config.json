@@ -5,7 +5,7 @@
             "name": "Tous"
         },
         "batiment_planetaire": {
-            "name": "Batiments Planetaires",
+            "name": "Bâtiments Planetaires",
             "range": "A6:D21",
             "color": [
                 10,
@@ -15,7 +15,7 @@
             "prefix": "css"
         },
         "batiment_lunaire": {
-            "name": "Batiments Lunaires",
+            "name": "Bâtiments Lunaires",
             "range": "A23:D30",
             "color": [
                 190,
@@ -25,7 +25,7 @@
             "prefix": "fix"
         },
         "recherches": {
-            "name":  "Recherches",
+            "name": "Recherches",
             "range": "A32:D47",
             "color": [
                 26,
@@ -55,7 +55,7 @@
             "prefix": "diff"
         },
         "defense_planetaire": {
-            "name": "Defense Planetaire",
+            "name": "D\u00e9fense Planetaire",
             "range": "A67:D74",
             "color": [
                 135,
@@ -65,7 +65,7 @@
             "prefix": "fix"
         },
         "defense_lunaire": {
-            "name": "Defense Lunaire",
+            "name": "D\u00e9fense Lunaire",
             "range": "A76:D81",
             "color": [
                 111,
