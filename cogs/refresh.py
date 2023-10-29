@@ -143,47 +143,6 @@ class EVENT_refresh(commands.Cog):
             print('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
 
-    # options = [
-    #     {
-    #         "name":"type",
-    #         "description":"Type d'alliance",
-    #         "required":True,
-    #         "type":3,
-    #         "choices":[
-    #             {
-    #                 "name": "Batiment Planetaire",
-    #                 "value": "batiment_planetaire"
-    #             },
-    #             {
-    #                 "name": "Batiment Lunaire",
-    #                 "value": "batiment_lunaire"
-    #             },
-    #             {
-    #                 "name": "Recherches",
-    #                 "value": "recherches"
-    #             },
-    #             {
-    #                 "name": "Vaisseaux Militaires",
-    #                 "value": "vaisseaux_militaires"
-    #             },
-    #             {
-    #                 "name": "Vaisseaux Civils",
-    #                 "value": "vaisseaux_civils"
-    #             },
-    #             {
-    #                 "name": "Défense Planetaire",
-    #                 "value": "defense_planetaire"
-    #             },
-    #             {
-    #                 "name": "Défense Lunaire",
-    #                 "value": "defense_lunaire"
-    #             }]
-    #     }
-    # ]
-    # @cog_ext.cog_slash(name="get", description="Obtenir les informations des alliances", guild_ids=[805927681031405578], options=options)
-    # async def get(self, ctx:SlashContext, type):
-    #     await self.event.connect()
-    #     await self.event.send(ctx, type)
     async def type_autocomplete(self, interaction: discord.Interaction, current: str):
         record_names = [self.event.config["structure"][k]["name"] for k in self.event.config["structure"].keys()]
         record_values = [k for k in self.event.config["structure"].keys()]
@@ -200,13 +159,6 @@ class EVENT_refresh(commands.Cog):
         if type == "*":
             record_values = [k for k in self.event.config["structure"].keys()]
             record_values.remove("*")
-            # await self.event.send(ctx, "batiment_planetaire")
-            # await self.event.send(ctx, "batiment_lunaire")
-            # await self.event.send(ctx, "recherches")
-            # await self.event.send(ctx, "vaisseaux_militaires")
-            # await self.event.send(ctx, "vaisseaux_civils")
-            # await self.event.send(ctx, "defense_planetaire")
-            # await self.event.send(ctx, "defense_lunaire")
             for i in record_values:
                 await self.event.send(ctx, i)
         else:

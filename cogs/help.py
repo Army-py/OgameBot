@@ -11,7 +11,6 @@ class Help(commands.Cog):
         __import__("is_ready").Is_Ready().command("help")
 
     
-    # @cog_ext.cog_slash(name="help", description="Permet d'avoir la liste des commandes", guild_ids=[799356517962874880])
     @commands.hybrid_command(name="help", description="Permet d'avoir la liste des commandes")
     async def help(self, ctx: commands.Context):
         embed = discord.Embed(

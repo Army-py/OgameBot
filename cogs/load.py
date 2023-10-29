@@ -16,21 +16,6 @@ class CMD_load(commands.Cog):
         __import__("is_ready").Is_Ready().command("load")
 
 
-
-    # options = [
-    # {
-    #     "name":"cog",
-    #     "description":"Cog",
-    #     "type":3,
-    #     "required":True,
-    #     "choices":[]
-    # }]
-    # for filename in os.listdir("./cogs"): 
-    #     if filename.endswith('.py'):
-    #         (options[0])["choices"].append({
-    #             "name":filename,
-    #             "value":filename[:-3]
-    #         })
     async def cog_autocomplete(self, interaction: discord.Interaction, current: str):
         cog_names = []
         for filename in os.listdir("./cogs"): 

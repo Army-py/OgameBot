@@ -16,23 +16,6 @@ class CMD_reload(commands.Cog):
         __import__("is_ready").Is_Ready().command("reload")
 
 
-    
-    # options = [
-    # {
-    #     "name":"cog",
-    #     "description":"Cog",
-    #     "type":3,
-    #     "required":True,
-    #     "choices":[]
-    # }]
-    # for filename in os.listdir("./cogs"): 
-    #     if filename.endswith('.py'):
-    #         (options[0])["choices"].append({
-    #             "name":filename,
-    #             "value":filename[:-3]
-    #         })
-    # @cog_ext.cog_slash(name="reload", description="Recharger une extension", guild_ids=[799356517962874880], options=options)
-    # @commands.has_permissions(administrator=True)
     async def cog_autocomplete(self, interaction: discord.Interaction, current: str):
         cog_names = []
         for filename in os.listdir("./cogs"): 
