@@ -39,7 +39,7 @@
 - Then go to `Keys` in the top bar, then `Add key` and finally `Create key`.
 - You will then choose `JSON` as the key type, and you will get a .json file.
 - Then place this file in the `bot_config` folder located in the root of the project, and rename it to `credentials.json`.
-- Remove the line which contains `"universe_domain": "googleapis.com"`, otherwise you will get an error.
+- Remove the line which contains `"universe_domain": "googleapis.com"`, otherwise you will get an error. **(Don't forget to remove the comma from the previous line too)**.
 
 
 ### Google Sheet API
