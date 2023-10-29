@@ -1,11 +1,11 @@
 {
-    "refresh_time": 30.0,
+    "refresh_time": 20.0,
     "structure": {
         "*": {
             "name": "Tous"
         },
         "batiment_planetaire": {
-            "name": "Bâtiments Planetaires",
+            "name": "B\u00e2timents Planetaires",
             "range": "A6:D21",
             "color": [
                 10,
@@ -15,7 +15,7 @@
             "prefix": "css"
         },
         "batiment_lunaire": {
-            "name": "Bâtiments Lunaires",
+            "name": "B\u00e2timents Lunaires",
             "range": "A23:D30",
             "color": [
                 190,
@@ -74,5 +74,13 @@
             ],
             "prefix": "css"
         }
+    },
+    "config": {
+        "*": "Afficher la configuration actuelle",
+        "refresh_time": "Temps d'actualisation",
+        "range": "Plage de cellules",
+        "color": "Couleur de l'embed",
+        "prefix": "Couleur du texte",
+        "name": "Nom des b\u00e2timents"
     }
 }

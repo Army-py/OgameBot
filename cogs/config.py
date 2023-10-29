@@ -44,9 +44,10 @@ class Command:
         
         with open("./config/config.json", "w", encoding="utf8") as file:
             json.dump(config, file, indent=4)
+        await asyncio.sleep(1)
         if self.config == "refresh_time": 
-            await asyncio.sleep(1)
             await self.client.reload_extension(f"cogs.refresh")
+        await self.client.reload_extension(f"cogs.config")
 
 
 
@@ -62,21 +63,23 @@ class CMD_config(commands.Cog):
 
 
     async def config_autocomplete(self, interaction: discord.Interaction, current: str):
-        config_names = ["Afficher la configuration actuelle", "Temps d'actualisation", "Plage de cellules", "Couleur de l'embed", "Couleur du texte", "Nom des bâtiments"]
-        config_values = ["*", "refresh_time", "range", "color", "prefix", "name"]
+        # config_names = ["Afficher la configuration actuelle", "Temps d'actualisation", "Plage de cellules", "Couleur de l'embed", "Couleur du texte", "Nom des bâtiments"]
+        # config_values = ["*", "refresh_time", "range", "color", "prefix", "name"]
+        config_keys = [k for k in self.config["config"].keys()]
+        config_values = [self.config["config"][k] for k in config_keys]
         return [
-            app_commands.Choice(name=config_names[i], value=config_values[i])
-            for i in range(len(config_names))
-            if config_names[i].lower().startswith(current.lower())
+            app_commands.Choice(name=config_values[i], value=config_keys[i])
+            for i in range(len(config_values))
+            if config_values[i].lower().startswith(current.lower())
         ]
     
     async def record_autocomplete(self, interaction: discord.Interaction, current: str):
         record_names = [self.config["structure"][k]["name"] for k in self.config["structure"].keys()]
-        record_values = [k for k in self.config["structure"].keys()]
-        record_names.pop(record_values.index("*"))
-        record_values.remove("*")
+        record_keys = [k for k in self.config["structure"].keys()]
+        record_names.pop(record_keys.index("*"))
+        record_keys.remove("*")
         return [
-            app_commands.Choice(name=record_names[i], value=record_values[i])
+            app_commands.Choice(name=record_names[i], value=record_keys[i])
             for i in range(len(record_names))
             if record_names[i].lower().startswith(current.lower())
         ]
