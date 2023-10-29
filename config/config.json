@@ -1,6 +1,9 @@
 {
     "refresh_time": 30.0,
     "structure": {
+        "*": {
+            "name": "Tous"
+        },
         "batiment_planetaire": {
             "name": "Batiments Planetaires",
             "range": "A6:D21",

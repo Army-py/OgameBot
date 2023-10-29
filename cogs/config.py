@@ -147,6 +147,7 @@ class CMD_config(commands.Cog):
         return [
             app_commands.Choice(name=config_names[i], value=config_values[i])
             for i in range(len(config_names))
+            if config_names[i].lower().startswith(current.lower())
         ]
     
     async def record_autocomplete(self, interaction: discord.Interaction, current: str):
@@ -155,6 +156,7 @@ class CMD_config(commands.Cog):
         return [
             app_commands.Choice(name=record_names[i], value=record_values[i])
             for i in range(len(record_names))
+            if record_names[i].lower().startswith(current.lower())
         ]
     
     # @cog_ext.cog_slash(name="config", description="Configuration du bot", guild_ids=[799356517962874880], options=options)

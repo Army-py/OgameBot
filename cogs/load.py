@@ -39,6 +39,7 @@ class CMD_load(commands.Cog):
         return [
             app_commands.Choice(name=cog_names[i], value=cog_names[i])
             for i in range(len(cog_names))
+            if cog_names[i].lower().startswith(current.lower())
         ]
     
     # @cog_ext.cog_slash(name="load", description="Charger une extension", guild_ids=[799356517962874880], options=options)

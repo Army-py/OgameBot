@@ -190,14 +190,16 @@ class EVENT_refresh(commands.Cog):
         return [
             app_commands.Choice(name=record_names[i], value=record_values[i])
             for i in range(len(record_names))
+            if record_names[i].lower().startswith(current.lower())
         ]
 
     @app_commands.command()
     @app_commands.autocomplete(type=type_autocomplete)
     @commands.has_permissions(administrator=True)
     async def send(self, ctx: discord.Interaction, type: str):        
-        if type == "all":
+        if type == "*":
             record_values = [k for k in self.event.config["structure"].keys()]
+            record_values.remove("*")
             # await self.event.send(ctx, "batiment_planetaire")
             # await self.event.send(ctx, "batiment_lunaire")
             # await self.event.send(ctx, "recherches")
