@@ -145,9 +145,9 @@ class EVENT_refresh(commands.Cog):
 
     async def type_autocomplete(self, interaction: discord.Interaction, current: str):
         record_names = [self.event.config["structure"][k]["name"] for k in self.event.config["structure"].keys()]
-        record_values = [k for k in self.event.config["structure"].keys()]
+        record_keys = [k for k in self.event.config["structure"].keys()]
         return [
-            app_commands.Choice(name=record_names[i], value=record_values[i])
+            app_commands.Choice(name=record_names[i], value=record_keys[i])
             for i in range(len(record_names))
             if record_names[i].lower().startswith(current.lower())
         ]
