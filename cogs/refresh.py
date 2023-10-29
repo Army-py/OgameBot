@@ -23,7 +23,7 @@ class Listener:
         self.SAMPLE_SPREADSHEET_ID_input = self.sheet_config["spreadsheet_id"]
 
 
-    def connect(self):
+    async def connect(self):
         try:
             SCOPES = [self.sheet_config["spreadsheet_scope"]]
 
@@ -36,6 +36,7 @@ class Listener:
             self.sheet = service.spreadsheets()
         except Exception as e:
             print('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+            await self.client.close()
 
 
     def get_values(self, range):
@@ -120,7 +121,6 @@ class EVENT_refresh(commands.Cog):
         self.client = client
 
         self.event = Listener(self.client) 
-        self.event.connect()
 
         self.refresh.start()
 
@@ -132,6 +132,7 @@ class EVENT_refresh(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         __import__("is_ready").Is_Ready().event("refresh")
+        await self.event.connect()
 
 
     seconds = (json.load(open("./config/config.json")))["refresh_time"]
