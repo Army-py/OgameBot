@@ -82,25 +82,27 @@ class Listener:
 
 
     def update_message_id(self, msg, range):
-        with open("./files/json/messages.json", "r") as file:
+        with open("./files/json/messages.json", "r", encoding="utf8") as file:
             messages_id = json.load(file)
-            (messages_id[range])["message_id"] = msg.id
-            (messages_id[range])["channel_id"] = msg.channel.id
-        
-        with open("./files/json/messages.json", "w") as file:
+            
+            if (range not in messages_id.keys()):
+                messages_id[range] = {}
+                messages_id[range]["message_id"] = msg.id
+                messages_id[range]["channel_id"] = msg.channel.id
+            else:
+                messages_id[range]["message_id"] = msg.id
+                messages_id[range]["channel_id"] = msg.channel.id
+        with open("./files/json/messages.json", "w", encoding="utf8") as file:
             json.dump(messages_id, file, indent=4)
 
 
     async def send(self, ctx: discord.Interaction, type):
-        image = discord.File(f"./files/images/{type}.png", filename=f"{type}.png")
+        try:
+            image = discord.File(f"./files/images/{type}.png", filename=f"{type}.png")
+        except FileNotFoundError:
+            image = None
         msg = await ctx.channel.send(file=image, embed=self.set_embed(type))
         self.update_message_id(msg, type)
-
-
-    # async def follow(self, ctx: discord.Interaction, type):
-    #     image = discord.File(f"./files/images/{type}.png", filename=f"{type}.png")
-    #     msg = await ctx.followup.send(file=image, embed=self.set_embed(type))
-    #     self.update_message_id(msg, type)
 
 
     async def refresh(self):
@@ -155,7 +157,8 @@ class EVENT_refresh(commands.Cog):
     @app_commands.command()
     @app_commands.autocomplete(type=type_autocomplete)
     @commands.has_permissions(administrator=True)
-    async def send(self, ctx: discord.Interaction, type: str):        
+    async def send(self, ctx: discord.Interaction, type: str):
+        await ctx.response.defer()
         if type == "*":
             record_values = [k for k in self.event.config["structure"].keys()]
             record_values.remove("*")
@@ -163,6 +166,7 @@ class EVENT_refresh(commands.Cog):
                 await self.event.send(ctx, i)
         else:
             await self.event.send(ctx, type)
+        await ctx.delete_original_response()
 
 
 
